@@ -24,5 +24,5 @@ Para ejecutar este proyecto en un entorno local de desarrollo, necesitas tener i
 
 **1. Clonar el repositorio:**
 ```bash
-git clone [https://github.com/FabioPalacios/cint.git](https://github.com/FabioPalacios/cint.git)
+git clone [(https://github.com/FabioPalacios/cint.git)]
 cd Cint
