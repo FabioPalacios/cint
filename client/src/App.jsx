@@ -14,18 +14,54 @@ export default function App() {
     password: "123",
   };
 
-  const handleLoginSuccess = (credentials) => {
-    if (credentials.email === MOCK_CREDENTIALS.email || credentials.email !== "") {
-      setUser({ email: credentials.email });
-      setCurrentScreen("roleSelection");
-    } else {
-      alert("Credenciales incorrectas. Usa jordan@cint.com");
+  const handleLoginSuccess = async (credentials) => {
+    console.log("Login attempt:", credentials);
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: credentials.email, password: credentials.password })
+      });
+      const data = await response.json();
+      console.log("Login response:", data);
+      if (response.ok && data.success) {
+        setUser({ email: data.user.email, tipoRol: data.user.tipoRol });
+        setCurrentScreen("roleSelection");
+      } else {
+        console.error("Login failed:", data.message || data);
+        alert(data.message || "Error de login");
+      }
+    } catch (error) {
+      console.error("Login request error:", error);
+      alert("No se pudo conectar con el servidor de autenticación.");
     }
   };
 
-  const handleRegisterSuccess = (userData) => {
-    setUser({ email: userData.email, name: userData.fullName });
-    setCurrentScreen("roleSelection");
+  const handleRegisterSuccess = async (userData) => {
+    console.log("Register attempt:", userData);
+    try {
+      const response = await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userData.email,
+          password: userData.password,
+          tipoRol: 0
+        })
+      });
+      const data = await response.json();
+      console.log("Register response:", data);
+      if (response.ok && data.success) {
+        setUser({ email: userData.email, name: userData.fullName });
+        setCurrentScreen("roleSelection");
+      } else {
+        console.error("Register failed:", data.message || data);
+        alert(data.message || "Error en el registro");
+      }
+    } catch (error) {
+      console.error("Register request error:", error);
+      alert("No se pudo conectar con el servidor de autenticación.");
+    }
   };
 
   const handleRoleSelect = (roleId) => {

@@ -7,7 +7,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister, onForgotPa
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onLoginSuccess) {
-      onLoginSuccess({ email });
+      onLoginSuccess({ email, password });
     }
   };
 
