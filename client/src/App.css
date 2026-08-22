@@ -1,5 +1,75 @@
 @import "tailwindcss";
 
+.login-page { min-height: 100svh; display: grid; grid-template-columns: 35% 65%; background: #fff; color: #292929; font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
+.login-brand { min-height: 100svh; overflow: hidden; display: flex; align-items: center; justify-content: flex-start; background: #1A5235; }
+.login-brand img { width: 100%; min-width: 520px; height: min(92svh, 690px); object-fit: contain; object-position: c; transform: translateX(-29%); }
+.login-content { display: flex; align-items: center; justify-content: center; padding: 48px clamp(32px, 8vw, 130px); }
+.login-form-shell { width: min(100%, 496px); }
+.login-heading { text-align: center; margin-bottom: 48px; }
+.login-heading h1 { margin: 0; color: #000000; font-size: clamp(32px, 3vw, 40px); font-weight: 800; letter-spacing: 0; }
+.login-accent { display: block; width: 83px; height: 5px; margin: 10px auto 28px; border-radius: 3px; background: #ccad53; }
+.login-heading p { max-width: 300px; margin: 0 auto; font-size: 15px; line-height: 1.3; font-weight: 700; }
+.login-form { display: flex; flex-direction: column; }
+.login-form label { margin: 0 0 7px; font-size: 16px; align-self: flex-start; }
+.login-input-wrap { position: relative; margin-bottom: 21px; border-bottom: 5px solid #1A5235; }
+.login-input-wrap svg { position: absolute; left: 12px; top: 13px; width: 20px; height: 20px; fill: none; stroke: #a7bfc4; }
+.login-input-wrap input { width: 100%; height: 41px; box-sizing: border-box; padding: 0 12px 0 47px; border: 1px solid #d5d5d5; border-radius: 9px; outline: 0; color: #333; font: inherit; font-size: 16px; }
+.login-input-wrap input:focus { border-color: #1A5235; box-shadow: 0 0 0 2px rgba(21, 86, 55, .12); }
+.forgot-password { align-self: flex-end; margin: -10px 0 14px; border: 0; background: transparent; color: #1A5235; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.login-submit { align-self: center; width: min(100%, 242px); height: 40px; border: 1px solid #123d29; border-radius: 22px; background: #1A5235; color: #fff; font: inherit; font-size: 16px; cursor: pointer; }
+.login-submit:hover { background: #0f452c; }
+.login-submit span { margin-right: 10px; font-size: 21px; vertical-align: -1px; }
+.login-divider { display: flex; align-items: center; gap: 33px; margin: 45px 0 23px; color: #1A5235; font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+.login-divider span { height: 2px; flex: 1; background: #ccad53; }
+.login-divider b { white-space: nowrap; }
+.google-button { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 46px; border: 1px solid #d8d8d8; border-radius: 9px; background: #fff; color: #252525; font: inherit; font-size: 16px; cursor: pointer; }
+.google-button:hover { background: #fafafa; }
+.google-button svg { width: 21px; height: 21px; }
+.register-prompt { margin-top: 15px; text-align: center; color: #1A5235; font-size: 14px; font-weight: 700; }
+.register-prompt button { padding: 0; border: 0; background: transparent; color: #ccad53; font: inherit; font-weight: 700; cursor: pointer; }
+
+@media (max-width: 700px) {
+  .login-page { display: block; }
+  .login-brand { min-height: 120px; height: 22svh; max-height: 170px; justify-content: center; }
+  .login-brand img { width: 260px; min-width: 0; height: 260px; transform: translateY(20%); }
+  .login-content { min-height: calc(100svh - 120px); box-sizing: border-box; padding: 38px 24px 32px; align-items: flex-start; }
+  .login-heading { margin-bottom: 35px; }
+  .login-heading h1 { font-size: 32px; }
+  .login-divider { gap: 14px; margin-top: 35px; }
+}
+
+.register-page { min-height: 100svh; display: grid; grid-template-columns: 65% 35%; background: #fff; color: #292929; font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
+.register-content { display: flex; align-items: center; justify-content: center; padding: 34px clamp(28px, 7vw, 110px); }
+.register-form-shell { width: min(100%, 496px); }
+.register-heading { margin-bottom: 20px; text-align: center; }
+.register-heading h1 { margin: 0; color: #1f1f1f; font-size: clamp(32px, 3vw, 40px); font-weight: 800; letter-spacing: 0; }
+.register-accent { display: block; width: 83px; height: 5px; margin: 8px auto 22px; border-radius: 3px; background: #ccad53; }
+.register-heading p { max-width: 360px; margin: 0 auto; font-size: 15px; line-height: 1.25; font-weight: 700; }
+.register-form { display: flex; flex-direction: column; }
+.register-form label { align-self: flex-start; margin: 0 0 7px; font-size: 16px; }
+.register-input-wrap { position: relative; margin-bottom: 13px; }
+.register-input-wrap svg { position: absolute; left: 12px; top: 11px; width: 20px; height: 20px; fill: none; stroke: #a7bfc4; }
+.register-input-wrap input { width: 100%; height: 41px; box-sizing: border-box; padding: 0 12px 0 47px; border: 1px solid #d5d5d5; border-radius: 9px; outline: 0; color: #333; font: inherit; font-size: 16px; }
+.register-input-wrap input:focus { border-color: #204475; box-shadow: 0 0 0 2px rgba(32, 68, 117, .12); }
+.register-password-wrap input { padding-right: 42px; }
+.register-eye { position: absolute; right: 20px; top: 10px; color: #a7bfc4; font-size: 18px; }
+.register-submit { align-self: center; width: min(100%, 243px); height: 40px; margin-top: 10px; border: 1px solid #18385f; border-radius: 22px; background: #204475; color: #fff; font: inherit; font-size: 16px; cursor: pointer; }
+.register-submit:hover { background: #18385f; }
+.register-error { margin-bottom: 12px; padding: 8px 10px; border-left: 4px solid #b94120; background: #fff1ed; color: #a3381c; font-size: 12px; font-weight: 700; text-align: left; }
+.register-login-prompt { margin-top: 20px; color: #155637; font-size: 14px; font-weight: 700; text-align: center; }
+.register-login-prompt button { padding: 0; border: 0; background: transparent; color: #ccad53; font: inherit; font-weight: 700; cursor: pointer; }
+.register-brand { min-height: 100svh; overflow: hidden; display: flex; align-items: center; justify-content: flex-end; background: #204475; }
+.register-brand img { width: 150%; min-width: 520px; height: min(94svh, 700px); object-fit: contain; object-position: center; transform: translateX(20%); filter: sepia(1) saturate(6) hue-rotate(325deg) brightness(.8); }
+
+@media (max-width: 700px) {
+  .register-page { display: flex; flex-direction: column; }
+  .register-content { order: 1; min-height: auto; padding: 36px 24px 28px; }
+  .register-heading { margin-bottom: 24px; }
+  .register-heading h1 { font-size: 32px; }
+  .register-brand { order: 2; min-height: 190px; height: 25svh; }
+  .register-brand img { width: 300px; min-width: 0; height: 300px; transform: translateY(18%); }
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

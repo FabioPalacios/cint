@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import Auth from "./components/Auth";
 import RoleSelection from "./components/RoleSelection";
 import BuyerDashboard from "./components/BuyerDashboard";
 import ProducerDashboard from "./components/ProducerDashboard";
@@ -79,18 +78,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-gray-50">
-      {currentScreen === "login" && (
-        <Login 
+      {(currentScreen === "login" || currentScreen === "register") && (
+        <Auth
           onLoginSuccess={handleLoginSuccess} 
-          onNavigateToRegister={() => setCurrentScreen("register")}
-          onForgotPassword={() => alert("Flujo de recuperación de contraseña en construcción")}
-        />
-      )}
-
-      {currentScreen === "register" && (
-        <Register 
           onRegisterSuccess={handleRegisterSuccess}
-          onNavigateToLogin={() => setCurrentScreen("login")} 
+          onNavigateToRegister={() => setCurrentScreen("register")}
+          onNavigateToLogin={() => setCurrentScreen("login")}
+          onForgotPassword={() => alert("Flujo de recuperación de contraseña en construcción")}
         />
       )}
 
