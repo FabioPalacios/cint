@@ -8,26 +8,22 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState("login");
   const [user, setUser] = useState(null);
 
-  const MOCK_CREDENTIALS = {
-    email: "jordan@cint.com",
-    password: "123",
-  };
-
   const handleLoginSuccess = async (credentials) => {
-    console.log("Login attempt:", credentials);
     try {
       const response = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: credentials.email, password: credentials.password })
+        credentials: "include",
+        body: JSON.stringify({
+          email: credentials.email.trim().toLowerCase(),
+          password: credentials.password
+        })
       });
       const data = await response.json();
-      console.log("Login response:", data);
       if (response.ok && data.success) {
         setUser({ email: data.user.email, tipoRol: data.user.tipoRol });
         setCurrentScreen("roleSelection");
       } else {
-        console.error("Login failed:", data.message || data);
         alert(data.message || "Error de login");
       }
     } catch (error) {
@@ -37,24 +33,22 @@ export default function App() {
   };
 
   const handleRegisterSuccess = async (userData) => {
-    console.log("Register attempt:", userData);
     try {
       const response = await fetch("http://localhost:3001/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          email: userData.email,
+          email: String(userData.email).trim().toLowerCase(),
           password: userData.password,
           tipoRol: 0
         })
       });
       const data = await response.json();
-      console.log("Register response:", data);
       if (response.ok && data.success) {
-        setUser({ email: userData.email, name: userData.fullName });
+        setUser({ email: String(userData.email).trim().toLowerCase(), name: userData.fullName });
         setCurrentScreen("roleSelection");
       } else {
-        console.error("Register failed:", data.message || data);
         alert(data.message || "Error en el registro");
       }
     } catch (error) {
@@ -71,9 +65,18 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setCurrentScreen("login");
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:3001/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      setCurrentScreen("login");
+    }
   };
 
   return (
