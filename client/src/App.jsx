@@ -3,10 +3,13 @@ import Auth from "./components/Auth";
 import RoleSelection from "./components/RoleSelection";
 import BuyerDashboard from "./components/BuyerDashboard";
 import ProducerDashboard from "./components/ProducerDashboard";
+import ExtraFormBuyer from "./components/ExtraFormBuyer";
+import ExtraFormProducer from "./components/ExtraFormProducer";
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState("login");
   const [user, setUser] = useState(null);
+  const [registrationDraft, setRegistrationDraft] = useState(null);
 
   const handleLoginSuccess = async (credentials) => {
     try {
@@ -21,11 +24,18 @@ export default function App() {
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        setUser({ email: data.user.email, tipoRol: data.user.tipoRol });
-        setCurrentScreen("roleSelection");
-      } else {
-        alert(data.message || "Error de login");
+        setUser({ email: data.user.email, tipoRol: data.user.tipoRol, id: data.user.id });
+        if (data.user.tipoRol === 2) {
+          setCurrentScreen("producerDashboard");
+        } else if (data.user.tipoRol === 1) {
+          setCurrentScreen("buyerDashboard");
+        } else {
+          setCurrentScreen("roleSelection");
+        }
+        return;
       }
+
+      alert(data.message || "Error de login");
     } catch (error) {
       console.error("Login request error:", error);
       alert("No se pudo conectar con el servidor de autenticación.");
@@ -39,29 +49,79 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
+          fullName: String(userData.fullName || "").trim(),
           email: String(userData.email).trim().toLowerCase(),
           password: userData.password,
+          phone: String(userData.phone || "").trim(),
           tipoRol: 0
         })
       });
       const data = await response.json();
       if (response.ok && data.success) {
-        setUser({ email: String(userData.email).trim().toLowerCase(), name: userData.fullName });
+        setRegistrationDraft({
+          fullName: String(userData.fullName || "").trim(),
+          email: String(userData.email).trim().toLowerCase(),
+          phone: String(userData.phone || "").trim(),
+          password: userData.password
+        });
         setCurrentScreen("roleSelection");
-      } else {
-        alert(data.message || "Error en el registro");
+        return;
       }
+
+      alert(data.message || "Error en el registro");
     } catch (error) {
       console.error("Register request error:", error);
       alert("No se pudo conectar con el servidor de autenticación.");
     }
   };
 
+  const completeProfile = async (payload) => {
+    try {
+      const response = await fetch("http://localhost:3001/auth/complete-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          ...registrationDraft,
+          ...payload,
+          tipoRol: payload.tipoRol,
+          email: registrationDraft?.email
+        })
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setUser({
+          id: data.user.id,
+          email: data.user.email,
+          tipoRol: data.user.tipoRol,
+          name: registrationDraft?.fullName
+        });
+
+        if (data.user.tipoRol === 1) {
+          setCurrentScreen("buyerDashboard");
+        } else if (data.user.tipoRol === 2) {
+          setCurrentScreen("producerDashboard");
+        } else {
+          setCurrentScreen("roleSelection");
+        }
+        return true;
+      }
+
+      alert(data.message || "No se pudo completar el perfil");
+      return false;
+    } catch (error) {
+      console.error("Profile completion error:", error);
+      alert("No se pudo completar el perfil del usuario.");
+      return false;
+    }
+  };
+
   const handleRoleSelect = (roleId) => {
     if (roleId === 1) {
-      setCurrentScreen("producerDashboard");
+      setCurrentScreen("extraFormBuyer");
     } else if (roleId === 2) {
-      setCurrentScreen("buyerDashboard");
+      setCurrentScreen("extraFormProducer");
     }
   };
 
@@ -75,6 +135,7 @@ export default function App() {
       console.error("Logout error:", error);
     } finally {
       setUser(null);
+      setRegistrationDraft(null);
       setCurrentScreen("login");
     }
   };
@@ -83,7 +144,7 @@ export default function App() {
     <div className="min-h-screen w-full bg-gray-50">
       {(currentScreen === "login" || currentScreen === "register") && (
         <Auth
-          onLoginSuccess={handleLoginSuccess} 
+          onLoginSuccess={handleLoginSuccess}
           onRegisterSuccess={handleRegisterSuccess}
           onNavigateToRegister={() => setCurrentScreen("register")}
           onNavigateToLogin={() => setCurrentScreen("login")}
@@ -92,21 +153,33 @@ export default function App() {
       )}
 
       {currentScreen === "roleSelection" && (
-        <RoleSelection 
-          onRoleSelect={handleRoleSelect} 
+        <RoleSelection onRoleSelect={handleRoleSelect} />
+      )}
+
+      {currentScreen === "extraFormBuyer" && (
+        <ExtraFormBuyer
+          onBack={() => setCurrentScreen("roleSelection")}
+          onSubmit={async (payload) => {
+            await completeProfile({ ...payload, tipoRol: 1 });
+          }}
+        />
+      )}
+
+      {currentScreen === "extraFormProducer" && (
+        <ExtraFormProducer
+          onBack={() => setCurrentScreen("roleSelection")}
+          onSubmit={async (payload) => {
+            await completeProfile({ ...payload, tipoRol: 2 });
+          }}
         />
       )}
 
       {currentScreen === "buyerDashboard" && (
-        <BuyerDashboard 
-          onLogout={handleLogout} 
-        />
+        <BuyerDashboard onLogout={handleLogout} />
       )}
 
       {currentScreen === "producerDashboard" && (
-        <ProducerDashboard 
-          onLogout={handleLogout} 
-        />
+        <ProducerDashboard onLogout={handleLogout} />
       )}
     </div>
   );
